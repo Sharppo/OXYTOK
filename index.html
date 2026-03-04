@@ -3,88 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYTOK | Premium Analytics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
+    <title>OXYTOK Premium Analytics</title>
     <style>
-        :root { --bg: #0a0a0c; --neon: #00f2ff; --glass: rgba(255, 255, 255, 0.03); --text: #e0e0e0; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; }
-        .logo { font-size: 2rem; font-weight: 800; margin-bottom: 20px; color: white; }
-        .logo span { color: var(--neon); }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; }
-        button { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--neon); color: #000; font-weight: 800; cursor: pointer; }
-        #result { margin-top: 25px; display: none; text-align: left; border-top: 1px solid #333; padding-top: 15px; }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .stat-box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center; }
-        .stat-num { display: block; color: var(--neon); font-weight: 800; }
+        body { background: #0a0a0c; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid rgba(0,242,255,0.2); width: 400px; text-align: center; }
+        h1 span { color: #00f2ff; }
+        input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #00f2ff; color: #000; font-weight: bold; cursor: pointer; }
+        #result { margin-top: 20px; display: none; text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 5px; text-align: center; font-size: 0.8rem; }
+        .num { display: block; color: #00f2ff; font-weight: bold; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
-<div class="glass-card">
-    <div class="logo">OXY<span>TOK</span></div>
-    <input type="text" id="urlInput" placeholder="Paste TikTok Video Link...">
-    <button id="btnAction">Analyze Metadata</button>
+<div class="card">
+    <h1>OXY<span>TOK</span></h1>
+    <input type="text" id="urlInput" placeholder="Paste Link Video TikTok...">
+    <button id="btnGas">ANALYZE DATA</button>
 
     <div id="result">
-        <div id="authorName" style="color:var(--neon); font-weight:800;">@username</div>
-        <p id="videoDesc" style="font-size:0.8rem; margin: 10px 0;"></p>
-        <div class="stat-grid">
-            <div class="stat-box"><span class="stat-num" id="valLikes">0</span><span>Likes</span></div>
-            <div class="stat-box"><span class="stat-num" id="valViews">0</span><span>Views</span></div>
-            <div class="stat-box"><span class="stat-num" id="valComments">0</span><span>Comments</span></div>
-            <div class="stat-box"><span class="stat-num" id="valER">0%</span><span>ER</span></div>
+        <div id="user" style="color:#00f2ff; font-weight:bold;">@user</div>
+        <p id="desc" style="font-size: 0.75rem; color: #ccc;"></p>
+        <div class="grid">
+            <div class="box"><span class="num" id="l">0</span>Likes</div>
+            <div class="box"><span class="num" id="v">0</span>Views</div>
+            <div class="box"><span class="num" id="c">0</span>Comments</div>
+            <div class="box"><span class="num" id="er">0%</span>Engagement</div>
         </div>
     </div>
 </div>
 
-async function analyzeData() {
-    const urlInput = document.getElementById('urlInput').value;
-    const btn = document.getElementById('btnAction');
-    const resultDiv = document.getElementById('result');
+<script type="module">
+    async function gasKeBackend() {
+        const url = document.getElementById('urlInput').value;
+        const btn = document.getElementById('btnGas');
+        const resDiv = document.getElementById('result');
 
-    if(!urlInput) return alert('Link-nya mana, Boss?');
+        if(!url) return alert('Link TikTok-nya mana?');
 
-    btn.innerText = "PENETRATING...";
-    btn.disabled = true;
+        btn.innerText = "PENETRATING...";
+        btn.disabled = true;
 
-    try {
-        const target = `https://oxytok-production.up.railway.app/api/analyze?url=${encodeURIComponent(urlInput)}`;
-        
-        const response = await fetch(target);
-        
-        // --- TAMBAHAN PROTEKSI ---
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            throw new TypeError("Oops! Backend ngirim HTML, bukan JSON. Cek link Railway lo!");
-        }
-        // -------------------------
-
-        const data = await response.json();
-
-        if (data.success) {
-            resultDiv.style.display = 'block';
-            document.getElementById('authorName').innerText = `@${data.author.uniqueId}`;
-            document.getElementById('videoDesc').innerText = data.title;
-            document.getElementById('valLikes').innerText = data.stats.likes.toLocaleString();
-            document.getElementById('valViews').innerText = data.stats.views.toLocaleString();
-            document.getElementById('valComments').innerText = data.stats.comments;
+        try {
+            // BERDASARKAN GAMBAR 3: Gunakan domain Railway lo
+            const api = `https://oxytok-production.up.railway.app/api/analyze?url=${encodeURIComponent(url)}`;
             
-            const er = ((data.stats.likes + data.stats.comments) / data.stats.views * 100).toFixed(2);
-            document.getElementById('valER').innerText = er + '%';
-        } else {
-            alert('Gagal: ' + data.message);
+            const response = await fetch(api);
+            
+            // Cek jika yang dikirim bukan JSON (mencegah error < !DOCTYPE)
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Backend kirim HTML (Error 404). Cek Port Railway lo!");
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                resDiv.style.display = 'block';
+                document.getElementById('user').innerText = `@${data.author.uniqueId}`;
+                document.getElementById('desc').innerText = data.title;
+                document.getElementById('l').innerText = data.stats.likes.toLocaleString();
+                document.getElementById('v').innerText = data.stats.views.toLocaleString();
+                document.getElementById('c').innerText = data.stats.comments;
+                
+                const erVal = ((data.stats.likes + data.stats.comments) / data.stats.views * 100).toFixed(2);
+                document.getElementById('er').innerText = erVal + '%';
+            } else {
+                alert('Gagal: ' + data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('SYSTEM ERROR: ' + err.message);
+        } finally {
+            btn.innerText = "ANALYZE DATA";
+            btn.disabled = false;
         }
-    } catch (err) {
-        console.error("Detail Error:", err);
-        alert('ERROR: ' + err.message);
-    } finally {
-        btn.innerText = "Analyze Metadata";
-        btn.disabled = false;
     }
-}
-document.getElementById('btnAction').addEventListener('click', analyzeData);
+
+    // Pasang listener agar tombol jalan
+    document.getElementById('btnGas').addEventListener('click', gasKeBackend);
+</script>
 
 </body>
 </html>
-
