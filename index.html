@@ -10,7 +10,7 @@ async function analyzeData() {
 
     try {
         // Ganti URL ini kalau lo udah deploy ke Render/Railway
-        const response = await fetch(`oxytok-production.up.railway.app/api/analyze?url=${encodeURIComponent(urlInput)}`);
+        const response = await fetch(`https://oxytok-production.up.railway.app/api/analyze?url=${encodeURIComponent(urlInput)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -35,3 +35,4 @@ async function analyzeData() {
     }
 
 }
+
