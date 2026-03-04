@@ -4,191 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OXYTOK | Premium Analytics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #0a0a0c;
-            --neon: #00f2ff;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.1);
-            --text: #e0e0e0;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Background Glow */
-        .bg-glow {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(0, 242, 255, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(0, 242, 255, 0.05) 0%, transparent 40%);
-            z-index: -1;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 500px;
-            z-index: 1;
-        }
-
-        header { text-align: center; margin-bottom: 40px; }
-        .logo { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; }
-        .logo span { color: var(--neon); text-shadow: 0 0 15px var(--neon); }
-        header p { font-size: 0.8rem; opacity: 0.5; margin-top: 5px; text-transform: uppercase; letter-spacing: 2px; }
-
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        }
-
-        input {
-            width: 100%;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 15px 20px;
-            color: white;
-            font-size: 1rem;
-            margin-bottom: 20px;
-            transition: 0.3s;
-        }
-
-        input:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
-
-        button {
-            width: 100%;
-            background: var(--neon);
-            color: black;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-        }
-
-        button:hover { transform: scale(1.02); box-shadow: 0 0 20px var(--neon); }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        #result { margin-top: 30px; display: none; animation: fadeIn 0.5s ease-out; }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stat-item {
-            background: rgba(255,255,255,0.02);
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-        .stat-val { display: block; font-size: 1.2rem; font-weight: 800; color: var(--neon); }
-        .stat-label { font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        :root { --bg: #0a0a0c; --neon: #00f2ff; --glass: rgba(255, 255, 255, 0.03); --text: #e0e0e0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; }
+        .logo { font-size: 2rem; font-weight: 800; margin-bottom: 20px; color: white; }
+        .logo span { color: var(--neon); }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; }
+        button { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--neon); color: #000; font-weight: 800; cursor: pointer; }
+        #result { margin-top: 25px; display: none; text-align: left; border-top: 1px solid #333; padding-top: 15px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .stat-box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center; }
+        .stat-num { display: block; color: var(--neon); font-weight: 800; }
     </style>
 </head>
 <body>
-    <div class="bg-glow"></div>
 
-    <div class="container">
-        <header>
-            <h1 class="logo">OXY<span>TOK</span></h1>
-            <p>Intelligence Analytics Engine</p>
-        </header>
+<div class="glass-card">
+    <div class="logo">OXY<span>TOK</span></div>
+    <input type="text" id="urlInput" placeholder="Paste TikTok Video Link...">
+    <button id="btnAction">Analyze Metadata</button>
 
-        <div class="glass-card">
-            <input type="text" id="urlInput" placeholder="Paste TikTok URL here..." />
-            <button onclick="analyzeData()" id="btnText">Analyze Metadata</button>
-
-            <div id="result">
-                <div id="authorName" style="font-weight: 800; color: var(--neon); margin-bottom: 5px;">@Username</div>
-                <div id="videoDesc" style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 20px;">Video description...</div>
-                
-                <div class="stats-grid">
-                    <div class="stat-item"><span class="stat-val" id="valLikes">0</span><span class="stat-label">Likes</span></div>
-                    <div class="stat-item"><span class="stat-val" id="valViews">0</span><span class="stat-label">Views</span></div>
-                    <div class="stat-item"><span class="stat-val" id="valComments">0</span><span class="stat-label">Comments</span></div>
-                    <div class="stat-item"><span class="stat-val" id="valER">0%</span><span class="stat-label">Engagement</span></div>
-                </div>
-            </div>
+    <div id="result">
+        <div id="authorName" style="color:var(--neon); font-weight:800;">@username</div>
+        <p id="videoDesc" style="font-size:0.8rem; margin: 10px 0;"></p>
+        <div class="stat-grid">
+            <div class="stat-box"><span class="stat-num" id="valLikes">0</span><span>Likes</span></div>
+            <div class="stat-box"><span class="stat-num" id="valViews">0</span><span>Views</span></div>
+            <div class="stat-box"><span class="stat-num" id="valComments">0</span><span>Comments</span></div>
+            <div class="stat-box"><span class="stat-num" id="valER">0%</span><span>ER</span></div>
         </div>
     </div>
+</div>
 
-    <script type="module">
-        async function analyzeData() {
-            const urlInput = document.getElementById('urlInput').value;
-            const btn = document.getElementById('btnText');
-            const resultDiv = document.getElementById('result');
+<script type="module">
+    // Fungsi utama
+    async function analyzeData() {
+        const urlInput = document.getElementById('urlInput').value;
+        const btn = document.getElementById('btnAction');
+        const resultDiv = document.getElementById('result');
 
-            if(!urlInput) return alert('Paste link-nya dulu, Boss!');
+        if(!urlInput) return alert('Link-nya mana, Boss?');
 
-            btn.innerText = "PENETRATING...";
-            btn.disabled = true;
+        btn.innerText = "PENETRATING...";
+        btn.disabled = true;
 
-            try {
-                // GANTI LINK DI BAWAH INI DENGAN LINK RAILWAY LO SENDIRI
-                const apiUrl = `https://oxytok-production.up.railway.app/api/analyze?url=${encodeURIComponent(urlInput)}`;
+        try {
+            // GANTI LINK DI BAWAH DENGAN LINK RAILWAY LO SENDIRI
+            const target = `https://oxytok-production.up.railway.app/api/analyze?url=${encodeURIComponent(urlInput)}`;
+            
+            const response = await fetch(target);
+            const data = await response.json();
+
+            if (data.success) {
+                resultDiv.style.display = 'block';
+                document.getElementById('authorName').innerText = `@${data.author.uniqueId}`;
+                document.getElementById('videoDesc').innerText = data.title;
+                document.getElementById('valLikes').innerText = data.stats.likes.toLocaleString();
+                document.getElementById('valViews').innerText = data.stats.views.toLocaleString();
+                document.getElementById('valComments').innerText = data.stats.comments;
                 
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (data.success) {
-                    resultDiv.style.display = 'block';
-                    document.getElementById('authorName').innerText = `@${data.author.uniqueId}`;
-                    document.getElementById('videoDesc').innerText = data.title || "No Description";
-                    
-                    // Format angka biar keren (1000 jadi 1K)
-                    const fmt = (num) => Intl.NumberFormat('en-US', { notation: 'compact' }).format(num);
-                    
-                    document.getElementById('valLikes').innerText = fmt(data.stats.likes);
-                    document.getElementById('valViews').innerText = fmt(data.stats.views);
-                    document.getElementById('valComments').innerText = fmt(data.stats.comments);
-                    
-                    // Hitung Engagement Rate
-                    const totalInteractions = data.stats.likes + data.stats.comments + data.stats.shares;
-                    const er = ((totalInteractions / data.stats.views) * 100).toFixed(2);
-                    document.getElementById('valER').innerText = er + '%';
-                } else {
-                    alert('Gagal ambil data: ' + (data.message || 'Cek URL-nya lagi.'));
-                }
-            } catch (e) {
-                console.error("Error Detail:", e);
-                alert('Server Error! Pastikan Backend di Railway sudah aktif.');
-            } finally {
-                btn.innerText = "Analyze Metadata";
-                btn.disabled = false;
+                const er = ((data.stats.likes + data.stats.comments) / data.stats.views * 100).toFixed(2);
+                document.getElementById('valER').innerText = er + '%';
+            } else {
+                alert('Gagal: ' + data.message);
             }
+        } catch (err) {
+            console.error(err);
+            alert('Server Error! Pastikan Railway sudah Aktif.');
+        } finally {
+            btn.innerText = "Analyze Metadata";
+            btn.disabled = false;
         }
+    }
 
-        // Ekspos fungsi ke window agar onclick="analyzeData()" di HTML bisa jalan
-        window.analyzeData = analyzeData;
-    </script>
+    // Pasang event listener biar aman dari error 'export'
+    document.getElementById('btnAction').addEventListener('click', analyzeData);
+</script>
+
 </body>
 </html>
