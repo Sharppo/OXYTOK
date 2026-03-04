@@ -38,50 +38,53 @@
     </div>
 </div>
 
-<script type="module">
-    // Fungsi utama
-    async function analyzeData() {
-        const urlInput = document.getElementById('urlInput').value;
-        const btn = document.getElementById('btnAction');
-        const resultDiv = document.getElementById('result');
+async function analyzeData() {
+    const urlInput = document.getElementById('urlInput').value;
+    const btn = document.getElementById('btnAction');
+    const resultDiv = document.getElementById('result');
 
-        if(!urlInput) return alert('Link-nya mana, Boss?');
+    if(!urlInput) return alert('Link-nya mana, Boss?');
 
-        btn.innerText = "PENETRATING...";
-        btn.disabled = true;
+    btn.innerText = "PENETRATING...";
+    btn.disabled = true;
 
-        try {
-            // GANTI LINK DI BAWAH DENGAN LINK RAILWAY LO SENDIRI
-            const target = `https://oxytok-production.up.railway.app/api/analyze?url=${encodeURIComponent(urlInput)}`;
-            
-            const response = await fetch(target);
-            const data = await response.json();
-
-            if (data.success) {
-                resultDiv.style.display = 'block';
-                document.getElementById('authorName').innerText = `@${data.author.uniqueId}`;
-                document.getElementById('videoDesc').innerText = data.title;
-                document.getElementById('valLikes').innerText = data.stats.likes.toLocaleString();
-                document.getElementById('valViews').innerText = data.stats.views.toLocaleString();
-                document.getElementById('valComments').innerText = data.stats.comments;
-                
-                const er = ((data.stats.likes + data.stats.comments) / data.stats.views * 100).toFixed(2);
-                document.getElementById('valER').innerText = er + '%';
-            } else {
-                alert('Gagal: ' + data.message);
-            }
-        } catch (err) {
-            console.error(err);
-            alert('Server Error! Pastikan Railway sudah Aktif.');
-        } finally {
-            btn.innerText = "Analyze Metadata";
-            btn.disabled = false;
+    try {
+        const target = `https://oxytok-production.up.railway.app/api/analyze?url=${encodeURIComponent(urlInput)}`;
+        
+        const response = await fetch(target);
+        
+        // --- TAMBAHAN PROTEKSI ---
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new TypeError("Oops! Backend ngirim HTML, bukan JSON. Cek link Railway lo!");
         }
-    }
+        // -------------------------
 
-    // Pasang event listener biar aman dari error 'export'
-    document.getElementById('btnAction').addEventListener('click', analyzeData);
-</script>
+        const data = await response.json();
+
+        if (data.success) {
+            resultDiv.style.display = 'block';
+            document.getElementById('authorName').innerText = `@${data.author.uniqueId}`;
+            document.getElementById('videoDesc').innerText = data.title;
+            document.getElementById('valLikes').innerText = data.stats.likes.toLocaleString();
+            document.getElementById('valViews').innerText = data.stats.views.toLocaleString();
+            document.getElementById('valComments').innerText = data.stats.comments;
+            
+            const er = ((data.stats.likes + data.stats.comments) / data.stats.views * 100).toFixed(2);
+            document.getElementById('valER').innerText = er + '%';
+        } else {
+            alert('Gagal: ' + data.message);
+        }
+    } catch (err) {
+        console.error("Detail Error:", err);
+        alert('ERROR: ' + err.message);
+    } finally {
+        btn.innerText = "Analyze Metadata";
+        btn.disabled = false;
+    }
+}
+document.getElementById('btnAction').addEventListener('click', analyzeData);
 
 </body>
 </html>
+
