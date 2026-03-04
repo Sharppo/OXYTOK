@@ -10,7 +10,7 @@ async function analyzeData() {
 
     try {
         // Ganti URL ini kalau lo udah deploy ke Render/Railway
-        const response = await fetch(`http://localhost:5000/api/analyze?url=${encodeURIComponent(urlInput)}`);
+        const response = await fetch(`oxytok-production.up.railway.app/api/analyze?url=${encodeURIComponent(urlInput)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -33,4 +33,5 @@ async function analyzeData() {
         btn.innerText = "Analyze Metadata";
         btn.disabled = false;
     }
+
 }
