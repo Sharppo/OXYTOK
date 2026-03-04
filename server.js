@@ -1,61 +1,49 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
-const helmet = require('helmet');
 
 const app = express();
+
+// Izin akses agar Frontend bisa ambil data
 app.use(cors());
-app.use(helmet());
-app.use(express.json());
 
-const PORT = process.env.PORT || 5000;
-
-// Header sakti biar nggak di-block TikTok
-const HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Sec-Fetch-Mode': 'navigate'
-};
+// Test apakah server jalan
+app.get('/health', (req, res) => {
+    res.json({ success: true, message: "OXYTOK System Online" });
+});
 
 app.get('/api/analyze', async (req, res) => {
     const videoUrl = req.query.url;
-    if (!videoUrl) return res.status(400).json({ error: 'Mana URL-nya, Boss?' });
+    
+    if (!videoUrl) {
+        return res.status(400).json({ success: false, message: "URL kosong!" });
+    }
 
     try {
-        // Step 1: Ambil HTML mentah dari TikTok
-        const response = await axios.get(videoUrl, { headers: HEADERS });
-        const html = response.data;
+        const response = await axios.get(videoUrl, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+            }
+        });
 
-        // Step 2: Extract JSON dari script tag TikTok
-        const jsonString = html.split('<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__" type="application/json">')[1].split('</script>')[0];
-        const rawData = JSON.parse(jsonString);
-        
-        // Step 3: Mapping data penting (Bypass mode)
-        const videoData = rawData.__DEFAULT_SCOPE__['webapp.video-detail'].itemInfo.itemStruct;
-
-        const result = {
+        // Dummy data untuk tes koneksi pertama kali
+        // Jika koneksi sukses, lo bakal dapet angka di bawah ini
+        res.json({
             success: true,
-            title: videoData.desc,
-            author: {
-                nickname: videoData.author.nickname,
-                uniqueId: videoData.author.uniqueId,
-                avatar: videoData.author.avatarLarger
-            },
-            stats: {
-                views: videoData.stats.playCount,
-                likes: videoData.stats.diggCount,
-                comments: videoData.stats.commentCount,
-                shares: videoData.stats.shareCount
-            },
-            music: videoData.music.title,
-            cover: videoData.video.cover
-        };
+            title: "Koneksi Berhasil! System OXYTOK Siap.",
+            author: { uniqueId: "tiktok_user" },
+            stats: { 
+                likes: 8888, 
+                views: 150000, 
+                comments: 120, 
+                shares: 45 
+            }
+        });
 
-        res.json(result);
     } catch (err) {
-        res.status(500).json({ success: false, message: 'Gagal tembus, TikTok lagi ketat atau URL salah.' });
+        res.status(500).json({ success: false, message: "Gagal ambil data TikTok" });
     }
 });
 
-app.listen(PORT, () => console.log(`[OXYTOK] Running on port ${PORT}`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
