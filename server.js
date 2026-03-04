@@ -4,49 +4,52 @@ const cors = require('cors');
 
 const app = express();
 
-// Izin akses agar Frontend bisa ambil data
+// WAJIB: Agar browser tidak memblokir request (Anti-CORS Error)
 app.use(cors());
 
-// Test apakah server jalan
+// Test koneksi (Buka ini dulu di browser: https://link-lo/health)
 app.get('/health', (req, res) => {
-    res.json({ success: true, message: "OXYTOK System Online" });
+    res.json({ success: true, message: "OXYTOK Engine Online!" });
 });
 
 app.get('/api/analyze', async (req, res) => {
     const videoUrl = req.query.url;
     
     if (!videoUrl) {
-        return res.status(400).json({ success: false, message: "URL kosong!" });
+        return res.status(400).json({ success: false, message: "Link kosong!" });
     }
 
     try {
         const response = await axios.get(videoUrl, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.9'
             }
         });
 
-        // Dummy data untuk tes koneksi pertama kali
-        // Jika koneksi sukses, lo bakal dapet angka di bawah ini
+        // Dummy Data (Gue kasih data ini dulu buat mastiin JSON lo jalan)
+        // Kalau ini muncul di dashboard, berarti jalur kabel lo udah BENER!
         res.json({
             success: true,
-            title: "Koneksi Berhasil! System OXYTOK Siap.",
+            title: "OXYTOK System Berhasil Terhubung!",
             author: { uniqueId: "tiktok_user" },
             stats: { 
-                likes: 8888, 
-                views: 150000, 
-                comments: 120, 
-                shares: 45 
+                likes: 12500, 
+                views: 250000, 
+                comments: 450, 
+                shares: 89 
             }
         });
 
     } catch (err) {
-        res.status(500).json({ success: false, message: "Gagal ambil data TikTok" });
+        console.error("Error Backend:", err.message);
+        res.status(500).json({ success: false, message: "Gagal ambil data TikTok (Server Busy)" });
     }
 });
 
-// Di file server.js paling bawah
-const PORT = process.env.PORT || 5000;
+// SESUAI GAMBAR 3: Gunakan Port 8080 atau otomatis dari Railway
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`[OXYTOK] Running on port ${PORT}`);
 });
